@@ -1,0 +1,39 @@
+settings:
+  logging: info
+  tags:
+    - automessage-production
+
+events:
+  container: 
+    - health_status
+    - oom
+    - destroy
+    - create
+    - kill
+    - pause
+    - stop
+  image: 
+    - delete
+  plugin:
+    - install
+    - remove
+  volume: 
+    - destroy
+    - create
+  network:
+    - destroy
+  daemon:
+    - reload
+  service:
+    - remove
+  node:
+    - remove
+  secret:
+    - remove
+  config:
+    - remove
+
+integrations:
+  slack:
+    enabled: True
+    url: https://hooks.slack.com/services/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

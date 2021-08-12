@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+  postgresautomessage:
+    image: postgres:10.2
+    environment:
+      POSTGRES_PASSWORD: 
+      POSTGRES_USER: 'nyxtc'
+      POSTGRES_DB: 'automessage'
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - 'postgres:/var/lib/postgresql/data'
+    labels:
+      - 'traefik.docker.network=laravel'
+      - 'traefik.backend=postgresautomessage'
+      - 'traefik.port=5432'
+      - 'traefik.frontend.rule=Host:postgresautomessage.docker.localhost'
+
+  php:
+    image: wodby/php:8.0-4.24.0
+    environment:
+      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+      PHP_XDEBUG: 1
+      PHP_XDEBUG_DEFAULT_ENABLE: 1
+      PHP_XDEBUG_REMOTE_CONNECT_BACK: 1
+      # MACOS
+      # PHP_XDEBUG_REMOTE_CONNECT_BACK: 0 # This is needed to respect remote.host setting bellow
+      # PHP_XDEBUG_REMOTE_HOST: "10.254.254.254" # You will also need to 'sudo ifconfig lo0 alias 10.254.254.254'
+      PHP_BLACKFIRE: 1
+    volumes:
+      - ./:/var/www/html
+#      - ./:/var/www/html:cached # User-guided caching
+#      - docker-sync:/var/www/html # Docker-sync for macOS users
+
+  nginxautomessage:
+    image: wodby/php-nginx:1.13-4.0.2
+    depends_on:
+      - php
+    environment:
+      NGINX_STATIC_CONTENT_OPEN_FILE_CACHE: "off"
+      NGINX_ERROR_LOG_LEVEL: debug
+      NGINX_BACKEND_HOST: php
+      NGINX_SERVER_ROOT: /var/www/html/public
+    user: 1000:101
+    volumes:
+      - ./:/var/www/html
+      - ./certs:/certs/
+      - ./docker/templates:/etc/nginx/conf.d
+      # Options for macOS users (https://docker4drupal.readthedocs.io/en/latest/macos)
+      #      - ./:/var/www/html:cached # User-guided caching
+      #      - docker-sync:/var/www/html # Docker-sync
+    labels:
+      - 'traefik.docker.network=laravel'
+      - 'traefik.backend=nginxautomessage'
+      - 'traefik.port=80'
+      - 'traefik.frontend.rule=Host:automessage.docker.localhost'
+
+#  traefik:
+#    image: traefik
+#    command: -c /dev/null --web --docker --logLevel=INFO
+#    ports:
+#      - '8000:80'
+#      - '8081:8081' # Dashboard
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    labels:
+#      - "traefik.docker.network=automessage"
+
+volumes:
+  codebase:
