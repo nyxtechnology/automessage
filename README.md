@@ -29,3 +29,7 @@ mandrill.example.php
 make in
 php artisan queue:work
 ```
+### Para rodar o projeto
+
+* Crie um banco de dados e adicione as informações dele no arquivo `.env`. 
+* ROde o comando `php artisan migrate` para criar as tables no seu banco de dados.
