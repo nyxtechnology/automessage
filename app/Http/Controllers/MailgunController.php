@@ -11,7 +11,7 @@ use App\Util\HandleStrings;
 use Hamcrest\Util;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
-use \Mailgun\Mailgun;
+use Mailgun\Mailgun;
 
 class MailgunController extends Controller
 {
