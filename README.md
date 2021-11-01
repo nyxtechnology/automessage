@@ -32,4 +32,15 @@ php artisan queue:work
 ### Para rodar o projeto
 
 * Crie um banco de dados e adicione as informações dele no arquivo `.env`. 
-* ROde o comando `php artisan migrate` para criar as tables no seu banco de dados.
+* Rode o comando `php artisan migrate` para criar as tables no seu banco de dados.
+
+### Configurando o arquivo .env
+
+* Em `MAIL_DRIVER` adicione o tipo do seu provedor de email (normalemte é IMAP ou SMTP).
+* Em `MAIL_HOST` adicione o server do seu provedor de email (ex: smtp.gmail.com).
+* Em `MAIL_PORT` adicione a porta do seu provedor de email(ex: 587 ou 465).
+* Em `MAIL_USERNAME` adicione o endereço de email que pretende utilizar.
+* Em `MAIL_PASSWORD` adicione a senha do email.
+* Em `MAIL_ENCRYPTION` adicione o tipo de criptografia do seu provedor de email (ex: ssl).
+* Em `MAIL_FROM_ADDRESS` adicione o seu endereço de email.
+* Em `MAIL_FROM_NAME` adicione o nome que será utilizado para identificar o email (ex: seu nome ou nome da empresa)
