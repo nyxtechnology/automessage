@@ -1,5 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReceiverController;
+use App\Http\Controllers\sendMail;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,3 +19,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('info', function(){
+    return view('info');
+});
+
+Route::get('sendmail', 'sendMail@sendMail');
