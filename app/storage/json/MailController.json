@@ -25,8 +25,14 @@
                     "sendEmailTemplate"
                 ]
             },
-            "params": "metadata",
-            "event": "event"
+            "event": "completePayment",
+            "metadata": {
+                "externalId": "",
+                "name": "{user_name}",
+                "to": "{user_email}",
+                "template": "compra completa",
+                "subject": "Sua compra foi concluida"
+            }
         },
         "receivedSupport": {
             "classes": {
