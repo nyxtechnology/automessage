@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gil
- * Date: 5/4/18
- * Time: 7:31 PM
- */
 
 namespace App\Http\Controllers;
 
@@ -16,7 +10,7 @@ class MandrillController extends Controller
     private $mandrill;
 
     public function __construct(){
-        $this->mandrill = new \Mandrill(Config::get('mandrillP2B.api_key'));
+        $this->mandrill = new MandrillController(Config::get('mandrillP2B.api_key'));
     }
 
     /**
