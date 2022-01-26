@@ -5,8 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Mail\mailTest;
 use Illuminate\Support\Facades\Mail;
+use app\Classes\SendMailYahoo;
 
-class sendMail extends Command
+class SendMailSMTP extends Command
 {
     /**
      * The name and signature of the console command.
@@ -39,6 +40,14 @@ class sendMail extends Command
      */
     public function handle()
     {
-        Mail::to('saul@hudson.com')->send(new maiLTest());
+        //Send mail
+        $to_name = 'David';
+        $to_email = 'Email@teste.com';
+        $data = array('name'=>"Sam Jose", "body" => "Test mail");
+
+        Mail::send('emails.mail', $data, function($message) use ($to_name, $to_email) {
+            $message->to($to_email, $to_name)->subject('Artisans Web Testing Mail');
+            $message->from('MAIL_FROM_ADDRESS','Artisans Web');
+        });
     }
 }

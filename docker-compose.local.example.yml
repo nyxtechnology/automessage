@@ -50,6 +50,13 @@ services:
       - 'traefik.logs.frontend.auth.basic.users=nyxtc:$$apr1$$n4tqay70$$Y6K.H9JYEhofKykkTMTQ61'
       - 'traefik.app.frontend.rule=Host:automessage.docker.local'
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+
   portainer:
     image: portainer/portainer
     container_name: "portainer"

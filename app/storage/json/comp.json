@@ -1,0 +1,38 @@
+{
+    "events":
+    [
+      {
+        "event_name": "event_one",
+        "actions":
+        [
+          "scheduling_email",
+          "send_email_by_tamplate"
+        ]
+      },
+      {
+        "event_name": "event_two",
+        "actions":
+        [
+          "cancel_scheduling_email",
+          "subscribe_list"
+        ]
+      },
+      {
+        "event_name": "event_three",
+        "actions":
+        [
+          "update_member_subscribe_list",
+          "update_delivery_scheduling_email"
+        ]
+      },
+      {
+        "event_name": "event_four",
+        "actions":
+        [
+          "cancel_all_scheduling_email",
+          "update_delivery_scheduling_email"
+        ]
+      }
+    ]
+  }
+  
