@@ -45,9 +45,9 @@ class SendMailSMTP extends Command
         $to_email = 'Email@teste.com';
         $data = array('name'=>"Sam Jose", "body" => "Test mail");
 
-        Mail::send('emails.mail', $data, function($message) use ($to_name, $to_email) {
+        Mail::send('mails.example', $data, function($message) use ($to_name, $to_email) {
             $message->to($to_email, $to_name)->subject('Artisans Web Testing Mail');
-            $message->from('MAIL_FROM_ADDRESS','Artisans Web');
+            $message->from(env('MAIL_FROM_ADDRESS'), 'Artisans Web');
         });
     }
 }
