@@ -1,8 +1,0 @@
-[2022-01-20 14:02:38] local.ERROR: Cannot declare class App\Console\Commands\sendMail because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Console\\Commands\\sendMail because the name is already in use at /media/david/HD Externo 1TB/Projetos/automessage/app/Console/Commands/sendMail.php:10)
-[stacktrace]
-#0 {main}
-"} 
-[2022-01-20 14:02:43] local.ERROR: Cannot declare class App\Console\Commands\sendMail because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Console\\Commands\\sendMail because the name is already in use at /media/david/HD Externo 1TB/Projetos/automessage/app/Console/Commands/sendMail.php:10)
-[stacktrace]
-#0 {main}
-"} 
