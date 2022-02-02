@@ -15,6 +15,8 @@ class MailSendSmtpTest extends TestCase
      */
     public function test_handle()
     {
+        $_ENV["MAIL_HOST"] = "smtp.mail.yahoo.com";
+
         $mailSend = new SendMailSMTP();
         $mailSend->handle();
         $this->assertTrue(true);
