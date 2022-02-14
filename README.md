@@ -48,3 +48,41 @@ php artisan queue:work
 ### Arquivo de parâmetros
 
 * Em `app\storage\json` no arquivo `MailController.json` está definido os parâmetros para configuração do envio de emails. 
+
+# Configurar sistema de envio de email para diferentes provedores
+#### Gmail
+
+Faça as seguintes alterações no arquivo `.env`
+* `MAIL_HOST` = smtp.gmail.com
+* `MAIL_USERNAME` = Nome da seção do envio. Ex: Compras ou Contabilidade
+* `MAIL_FROM_ADDRESS` = seuemail@gmail.com
+
+#### Yahoo
+
+Faça as seguintes alterações no arquivo `.env`
+* `MAIL_HOST` = smtp.mail.yahoo.com
+* `MAIL_FROM_ADDRESS` = seuemail@yahoo.com.br
+* `MAIL_USERNAME` = seuemail@yahoo.com.br
+
+O yahoo tem algumas configurações a mais necessárias para o seu funcionamento.
+Acesse a área `Informações da conta`
+Na página que abrir acesse `Segurança da conta`
+Caso esteja com a verificação em duas etapas ativada, será necessário desativa-lá.
+Vá em `Senha do app` e gere uma nova senha 
+Após gerar a senha irá aparecer uma seguencia alfabetica como `oeva oxpj ncfu ppfr`
+Retire o espaçamento entre as sequencias alfabeticas e adicione em `MAIL_PASSWORD`.
+Ex: `MAIL_PASSWORD` = oevaoxpjncfuppfr
+
+#### Outlook
+
+Faça as seguintes alterações no arquivo `.env`
+* `MAIL_HOST` = smtp-mail.outlook.com
+* `MAIL_FROM_ADDRESS` = seuemail@outlook.com
+* `MAIL_USERNAME` = seuemail@outlook.com
+
+#### Mailgun
+
+Faça as seguintes alterações no arquivo `.env`
+* `MAIL_HOST` = smtp.mailgun.org
+* `MAIL_FROM_ADDRESS` = seu dominio do mailgun
+* `MAIL_USERNAME` = email ou nome que deseja que apareça no email enviado
