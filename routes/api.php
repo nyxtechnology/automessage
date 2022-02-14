@@ -19,3 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('webhook', 'ReceiverController@handleWebhook');
+
+Route::post('telegram', 'TelegramController@receiveMessage');
