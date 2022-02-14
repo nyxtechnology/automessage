@@ -14,14 +14,14 @@ class SendMailSMTP extends Command
      *
      * @var string
      */
-    protected $signature = 'send:mail';
+    protected $signature = 'mail:smtp';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Send email to recipient';
 
     /**
      * Create a new command instance.
@@ -40,9 +40,14 @@ class SendMailSMTP extends Command
      */
     public function handle()
     {
+        putenv("MAIL_FROM_ADDRESS=davidlucas807@yahoo.com.br");
+        putenv("MAIL_HOST=smtp.mail.yahoo.com");
+        putenv("MAIL_ENCRYPTION=SSL");
+        putenv("MAIL_PORT=587");
+
         //Send mail
         $to_name = 'David';
-        $to_email = 'davidlucas807@yahoo.com.br';
+        $to_email = 'davidlugatinho@gmail.com';
         $data = array('name'=>"Sam Jose", "body" => "Test mail");
 
         Mail::send('mails.example', $data, function($message) use ($to_name, $to_email) {
