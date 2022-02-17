@@ -13,6 +13,6 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function generateLog ($type, $user, $event, $metadata) {
-        Log::info('['.$type.'] Usuário = '.$user.', Evento = '.json_encode($event).PHP_EOL.'[stacktrace]'.PHP_EOL.print_r($metadata, true));
+        Log::info('['.$type.'] To = '.$user.', Event = '.json_encode($event).PHP_EOL.'[stacktrace]'.PHP_EOL.print_r($metadata, true));
     }
 }

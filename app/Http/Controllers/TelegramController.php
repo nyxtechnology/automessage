@@ -27,9 +27,7 @@ class TelegramController extends Controller
     public function sendMessage($settings){
         try {
             $this->telegram->sendMessage($settings['params']['to'], $settings['params']['message']);
-        } catch (InvalidArgumentException $e) {
-            Log::error('TelegramController -> sendMessage() ' . $e->getMessage());
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException|Exception $e) {
             Log::error('TelegramController -> sendMessage() ' . $e->getMessage());
         }
     }
@@ -47,18 +45,16 @@ class TelegramController extends Controller
                 'message' => ''
             ]
         ];
-
         switch ($msgText) {
             case '/start':
                 $settings['params']['message'] = "Hi $userName!
                 \nI'm a Automessage bot. Nice to meet you!
                 \nThis $msgChatId is our chat id. You will need it when you send events from your system to Automessage.";
-                $this->sendMessage($settings);
                 break;
             default:
                 $settings['params']['message'] = "I'm a bot but I haven't been fully configured yet.\nSorry!";
-                $this->sendMessage($settings);
                 break;
         }
+        $this->sendMessage($settings);
     }
 }

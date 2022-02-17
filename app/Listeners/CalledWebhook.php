@@ -24,6 +24,7 @@ class CalledWebhook
      */
     public function handle(WebhookReceived $event)
     {
+        // call function by webhook event
         $settings = $event->settings;
         foreach($settings['classes'] as $key => $value){
             foreach($value as $action) {
