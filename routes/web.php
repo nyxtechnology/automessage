@@ -25,4 +25,4 @@ Route::get('info', function(){
     return view('info');
 });
 
-Route::get('sendmail', 'sendMail@sendMail');
+Route::get('sendmail', 'sendMailSMTP@sendMailSMTP');
