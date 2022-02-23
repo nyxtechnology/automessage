@@ -6,21 +6,21 @@ use Illuminate\Console\Command;
 use App\Mail\mailTest;
 use Illuminate\Support\Facades\Mail;
 
-class sendMail extends Command
+class sendMailSMTP extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'send:mail';
+    protected $signature = 'mail:smtp';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Send email to recipient';
 
     /**
      * Create a new command instance.
@@ -39,6 +39,14 @@ class sendMail extends Command
      */
     public function handle()
     {
-        Mail::to('saul@hudson.com')->send(new maiLTest());
+        //Send mail
+        $to_name = '';
+        $to_email = '';
+        $data = array();
+
+        Mail::send('mails.example', $data, function($message) use ($to_name, $to_email) {
+            $message->to($to_email, $to_name)->subject('Artisans Web Testing Mail');
+            $message->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+        });
     }
 }
