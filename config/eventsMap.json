@@ -1,0 +1,62 @@
+{
+  "sendTelegramAlert": {
+    "classes": [
+      {
+        "name": "App\\Http\\Controllers\\TelegramController",
+        "methods": [
+          "sendMessage"
+        ]
+      }
+    ]
+  },
+  "subscribeList": {
+    "classes": [
+      {
+        "name": "App\\Http\\Controllers\\SchedulingController",
+        "methods": [
+          "deleteSchedulingEmails"
+        ]
+      },
+      {
+        "name": "App\\Http\\Controllers\\MailgunController",
+        "methods": [
+          "subscribeList"
+        ]
+      },
+      {
+        "name": "App\\Http\\Controllers\\MailChimpController",
+        "methods": [
+          "subscribeList"
+        ]
+      }
+    ]
+  },
+  "completePayment": {
+    "classes": [
+      {
+        "name": "App\\Http\\Controllers\\SchedulingController",
+        "methods": [
+          "deleteAllSchedulingEmailsByEventStop"
+        ]
+      },
+      {
+        "name": "App\\Http\\Controllers\\MailgunController",
+        "methods": [
+          "subscribeList",
+          "sendEmailTemplate"
+        ]
+      }
+    ]
+  },
+  "startPayment": {
+    "classes": [
+      {
+        "name": "App\\Http\\Controllers\\SchedulingController",
+        "methods": [
+          "deleteSchedulingEmails",
+          "saveSchedulingEmails"
+        ]
+      }
+    ]
+  }
+}
