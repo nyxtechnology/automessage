@@ -3,9 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\WebhookReceived;
-use http\Message;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,11 +33,10 @@ class ReceiveEvent implements ShouldQueue
      */
     public function handle()
     {
-        //TODO: migrate event file to db
-
+        $eventMap = json_decode(file_get_contents(Config::get('settings.event_path')),true);
         sleep(2);
         try {
-            $settings = Config::get('eventsMap.' . $this->message->event);
+            $settings = $eventMap[$this->message->event];
             $settings['params'] = json_decode(json_encode($this->message->metadata), true);
             event(new WebhookReceived($settings));
         } catch (\Exception $e) {
