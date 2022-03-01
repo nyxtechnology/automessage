@@ -58,5 +58,15 @@
         ]
       }
     ]
+  },
+  "sendMailSMTP": {
+    "classes": [
+      {
+        "name": "App\\Http\\Controllers\\sendMailController",
+        "methods": [
+          "sendMail"
+        ]
+      }
+    ]
   }
 }
