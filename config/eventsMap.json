@@ -62,7 +62,7 @@
   "sendMailSMTP": {
     "classes": [
       {
-        "name": "App\\Http\\Controllers\\sendMailController",
+        "name": "App\\Http\\Controllers\\SendMailController",
         "methods": [
           "sendMail"
         ]

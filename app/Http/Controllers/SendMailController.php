@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class sendMailController extends Controller
+class SendMailController extends Controller
 {
     public function sendMail($settings)
     {
