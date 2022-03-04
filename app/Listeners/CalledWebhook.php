@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\WebhookReceived;
-use Illuminate\Support\Facades\Log;
 
 class CalledWebhook
 {
@@ -27,11 +26,10 @@ class CalledWebhook
     {
         // call function by webhook event
         $settings = $event->settings;
-        foreach($settings['classes'] as $class){
-            $object = new $class['name'];
-            foreach($class['methods'] as $action) {
-                $method = $action;
-                $object->$method($settings);
+        foreach($settings as $class){
+            $object = new $class['class'];
+            foreach($class['methods'][0] as $method => $parameters){
+                $object->$method($parameters);
             }
         }
     }
