@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 
-class SendMailSmtpTest extends TestCase
+class SendMailControllerTest extends TestCase
 {
     /**
      * Test to send mail to mailhog and verify if the system is work.
@@ -13,7 +13,7 @@ class SendMailSmtpTest extends TestCase
      * @return void
      */
 
-    public function test_send_email()
+    public function test_send_mail()
     {
         $subject = "You're not chasing rainbows - " . time();
         $response = $this->postJson('/api/webhook',
