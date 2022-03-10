@@ -26,9 +26,10 @@ class TelegramController extends Controller
      */
     public function sendMessage($settings){
         try {
-            $this->telegram->sendMessage($settings['to'], $settings['message']);
+            return $this->telegram->sendMessage($settings['to'], $settings['message']);
         } catch (InvalidArgumentException|Exception $e) {
             Log::error('TelegramController -> sendMessage() ' . $e->getMessage());
+            return $e->getMessage();
         }
     }
 
@@ -41,7 +42,6 @@ class TelegramController extends Controller
         $userName  = $request->json('message.from.first_name');
         $settings  = [
             'to' => $msgChatId,
-            'message' => ''
         ];
         switch ($msgText) {
             case '/start':
