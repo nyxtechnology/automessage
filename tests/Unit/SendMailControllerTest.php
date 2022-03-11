@@ -13,7 +13,6 @@ class SendMailControllerTest extends TestCase
      *
      * @return void
      */
-
     public function test_send_mail()
     {
         $subject = "You're not chasing rainbows - " . time();
