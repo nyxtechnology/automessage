@@ -25,8 +25,6 @@ class SendMailControllerTest extends TestCase
             'message' => "Dont'go to the house of wolves"
         ]]);
 
-
-
         $response = Http::get('http://mailhog:8025/api/v2/search', [
             'kind' => 'to',
             'query' => 'Oliver@sykes.com'
