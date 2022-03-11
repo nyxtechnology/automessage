@@ -1,0 +1,113 @@
+{
+  "boardActions": [
+    {
+      "conditions": {
+        "post.header.x-forwarded-for": "178.128.181.251",
+        "post.body.description": "act-completeChecklist",
+        "post.body.user": "gilberto.souza"
+      },
+      "classes": [
+        {
+          "class": "App\\Http\\Controllers\\TelegramController",
+          "methods": [
+            {
+              "sendMessage": {
+                "to": "post.body.to",
+                "message": "post.body.text"
+              }
+            }
+          ]
+        },
+        {
+          "class": "App\\Http\\Controllers\\SendMailController",
+          "methods": [
+            {
+              "sendMail": {
+                "to": "admin@nyx.tc",
+                "subject": "post.body.description",
+                "message": "post.body.text",
+                "template": "movedCard",
+                "templateVariables": {
+                  "card": "post.body.card",
+                  "user": "post.body.user",
+                  "action": {
+                    "description": "post.body.description",
+                    "user": "post.body.user",
+                    "date": {
+                      "date": "post.body.date",
+                      "timezone_type": "post.body.timezoneType",
+                      "timezone": "post.body.timezone"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sendMail": {
+                "to": "gilberto.souza@nyx.tc",
+                "subject": "post.body.description",
+                "message": "post.body.text",
+                "template": "youMovedCard"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "post.header.from": "https://board.nyx.tc",
+        "post.body.description": "act-moveCard",
+        "post.body.user": "edmar.souza"
+      },
+      "classes": [
+        {
+          "class": "App\\Http\\Controllers\\TelegramController",
+          "methods": [
+            {
+              "sendMessage": {
+                "to": "987654321",
+                "message": "post.body.text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "PaymentActions": [
+    {
+      "conditions": {
+        "post.header.from": "https://marketing.place.nyx.tc",
+        "post.body.event": "startPayment"
+      },
+      "classes": [
+        {
+          "class": "App\\Http\\Controllers\\SchedulingController",
+          "methods": [
+            {
+              "deleteSchedulingEmails": {
+                "event": "startPayment",
+                "externalId": "post.body.id",
+                "to": "post.body.to"
+              }
+            },
+            {
+              "saveSchedulingEmails": {
+                "externalId": "post.body.id",
+                "to": "post.body.to",
+                "deliveryDate": "post.body.deliveryDate",
+                "eventStop": "startPayment",
+                "template": "abandonedShoppingCart",
+                "templateVariables": {
+                  "link": "post.body.link",
+                  "user": "post.body.name"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

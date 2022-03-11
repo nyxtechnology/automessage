@@ -80,7 +80,7 @@ class ReceiveEvent implements ShouldQueue
      *
      * @param $value
      */
-    public function setPostVariableRecursive(&$value) : void {
+    private function setPostVariableRecursive(&$value) : void {
         if(is_array($value)) {
             foreach ($value as $k => &$v)
                 $this->setPostVariableRecursive($v);
@@ -95,7 +95,7 @@ class ReceiveEvent implements ShouldQueue
      * @param $value
      * @return mixed
      */
-    public function getPostVariableValue(string $variable) {
+    private function getPostVariableValue(string $variable) {
         // check if the variable starts with 'post'
         if(strpos($variable, 'post') === 0) {
             $path = explode('.', $variable);
