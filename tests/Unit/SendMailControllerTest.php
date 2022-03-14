@@ -13,20 +13,20 @@ class SendMailControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_send_mail()
+    public function testSendMail()
     {
         $subject = "You're not chasing rainbows - " . time();
         $email = new SendMailController();
-        $email->sendMail(['params' => [
+        $email->sendMail([
             'name' => 'Oliver Sykes',
-            'to' => 'Oliver@sykes.com',
+            'to' => 'oliver@sykes.com',
             'subject' => $subject,
             'message' => "Dont'go to the house of wolves"
-        ]]);
+        ]);
 
         $response = Http::get('http://mailhog:8025/api/v2/search', [
             'kind' => 'to',
-            'query' => 'Oliver@sykes.com'
+            'query' => 'oliver@sykes.com'
         ]);
         $this->assertEquals(true, $response->ok());
         $this->assertJson($response->body());
