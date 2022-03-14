@@ -66,7 +66,7 @@
           "methods": [
             {
               "sendMessage": {
-                "to": "987654321",
+                "to": "123123123",
                 "message": "post.body.text"
               }
             }
