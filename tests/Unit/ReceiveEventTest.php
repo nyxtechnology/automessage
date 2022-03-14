@@ -40,7 +40,7 @@ class ReceiveEventTest extends TestCase
     /**
      * @test
      */
-    public function TestCheckPostCondition()
+    public function testCheckPostCondition()
     {
         // arrange
         $receiveEvent = new ReceiveEvent($this->post);
