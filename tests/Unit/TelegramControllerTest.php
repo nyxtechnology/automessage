@@ -9,6 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TelegramControllerTest extends TestCase
 {
+    /**
+     * @group telegramTest
+     */
     public function testSendMessage()
     {
         //arrange
