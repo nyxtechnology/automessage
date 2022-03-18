@@ -63,7 +63,7 @@ class ReceiveEventTest extends TestCase
         $this->assertNotEquals("São Paulo", $classes[1]["methods"][0]["sendMail"]["templateVariables"]["action"]["date"]["timezone"]);
 
         // act
-        $receiveEvent->preparePostVariables($classes);
+        $receiveEvent->prepareClassesVariables($classes);
 
         // assert
         $this->assertEquals("São Paulo", $classes[1]["methods"][0]["sendMail"]["templateVariables"]["action"]["date"]["timezone"]);
