@@ -16,6 +16,7 @@ class ReceiveEvent implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $message;
+
     /**
      * Create a new job instance.
      *
@@ -40,13 +41,13 @@ class ReceiveEvent implements ShouldQueue
                 // check if event's conditions is true
                 $conditions = true;
                 foreach ($event['conditions'] as $key => $value) {
-                    if(!$this->checkPostCondition($key,$value)) {
+                    if(!$this->checkPostCondition($key, $value)) {
                         $conditions = false;
                         break;
                     }
                 }
                 if($conditions) {
-                    $this->preparePostVariables($event['classes']);
+                    $this->prepareClassesVariables($event['classes']);
                     event(new WebhookReceived($event['classes']));
                 }
             }
@@ -54,20 +55,21 @@ class ReceiveEvent implements ShouldQueue
     }
 
     /**
-     *  Prepare POST variables by entering dynamic values
+     *  This method prepares class variables
+     *  by inserting dynamic values when necessary.
      *
-     * @param $key
-     * @param $value
+     * @param $classes
+     * @return void
      */
-    public function preparePostVariables(&$classes) {
+    public function prepareClassesVariables(&$classes) {
         // Loop through the classes to get each class
         foreach ($classes as &$class) {
             // Loop through the methods to get each method
             foreach ($class['methods'] as &$method) {
                 // Loop through the method to get all params
-                foreach ($method as &$param) {
-                    // Loop through the params to get each param
-                    foreach ($param as $key => &$value) {
+                foreach ($method as &$params) {
+                    // Loop through the params to get each one
+                    foreach ($params as $key => &$value) {
                         $this->setPostVariableRecursive($value);
                     }
                 }
@@ -85,8 +87,8 @@ class ReceiveEvent implements ShouldQueue
             foreach ($value as $k => &$v)
                 $this->setPostVariableRecursive($v);
         }
-        else
-            $value = $this->getPostVariableValue($value);
+
+        $value = $this->getPostVariableValue($value);
     }
 
     /**
@@ -100,7 +102,7 @@ class ReceiveEvent implements ShouldQueue
         if(strpos($variable, 'post') === 0) {
             $path = explode('.', $variable);
             $value = $this->message;
-            for ($i = 1; $i < count($path); $i++) {
+            for ($i = 1; $i < count($path); $i ++) {
                 if (isset($value->{$path[$i]}))
                     $value = $value->{$path[$i]};
                 else
