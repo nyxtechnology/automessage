@@ -77,22 +77,28 @@
           "class": "App\\Http\\Controllers\\SchedulingController",
           "methods": [
             {
-              "deleteSchedulingEmails": {
-                "event": "startPayment",
-                "externalId": "post.body.id",
-                "to": "post.body.to"
-              }
-            },
-            {
-              "saveSchedulingEmails": {
-                "externalId": "post.body.id",
-                "to": "post.body.to",
-                "deliveryDate": "post.body.deliveryDate",
-                "eventStop": "startPayment",
-                "template": "abandonedShoppingCart",
-                "templateVariables": {
-                  "link": "post.body.link",
-                  "user": "post.body.name"
+              "messageScheduling": {
+                "dateDelivery": {
+                  "startDate": "post.body.date_event",
+                  "operation": "+ 3 days"
+                },
+                "waysDelivery": [
+                  {
+                    "class": "App\\Http\\Controllers\\TelegramController",
+                    "methods": [
+                      {
+                        "sendMessage": {
+                          "to": "post.body.to",
+                          "message": "post.body.text"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "conditionsStopDelivery": {
+                  "post.body.cardId": "wwutm7rsiJPX5ar3z",
+                  "post.header.x-forwarded-for": "178.128.181.251",
+                  "post.body.description": "act-moveCard"
                 }
               }
             }
