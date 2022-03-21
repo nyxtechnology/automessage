@@ -124,7 +124,7 @@ class SchedulingControllerTest extends TestCase
     }
 
     /**
-     * @group test01
+     * @group schedulingTest
      */
     public function testMessageScheduling() {
         // arrange
