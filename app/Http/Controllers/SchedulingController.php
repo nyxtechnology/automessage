@@ -9,117 +9,129 @@
 namespace App\Http\Controllers;
 
 use App\EmailSchedulings;
+use App\SchedulingMessage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Ramsey\Uuid\Uuid;
 
 class SchedulingController extends Controller
 {
     /**
      * Calculate message delivery date
-     * @param Carbon $date
+     * @param string $date
      * @param string $operation
-     * @return Carbon
+     * @return null|Carbon
      */
-    public function calcDeliveryDate(string $date, string $operation): Carbon
+    public function calcDeliveryDate(string $date, string $operation): ?Carbon
     {
         try {
-            $date = Carbon::parse($date);
+            $calcDate = Carbon::parse($date);
             // position 0 is the operator,
             // position 1 is the value and
             // position 2 is type
             $operation = explode(' ', strtolower($operation));
             if (count($operation) !== 3) {
                 Log::error('Invalid operation: ' . json_encode($operation));
-                return $date;
+                return null;
             }
 
             switch ($operation[2]) {
                 case 'days':
                 case 'day':
-                    $operation[0] == '-' ?
-                        $date->subDays($operation[1]) :
-                            $date->addDays($operation[1]);
+                    $calcDate = $operation[0] == '-' ?
+                        $calcDate->subDays($operation[1]) :
+                            $calcDate->addDays($operation[1]);
                     break;
                 case 'weeks':
                 case 'week':
-                    $date = $operation[0] == '-' ?
-                        $date->subWeeks($operation[1]) :
-                            $date->addWeeks($operation[1]);
+                    $calcDate = $operation[0] == '-' ?
+                        $calcDate->subWeeks($operation[1]) :
+                            $calcDate->addWeeks($operation[1]);
                     break;
                 case 'months':
                 case 'month':
-                    $date = $operation[0] == '-' ?
-                        $date->subMonths($operation[1]) :
-                            $date->addMonths($operation[1]);
+                    $calcDate = $operation[0] == '-' ?
+                        $calcDate->subMonths($operation[1]) :
+                            $calcDate->addMonths($operation[1]);
                     break;
                 case 'years':
                 case 'year':
-                    $date = $operation[0] == '-' ?
-                        $date->subYears($operation[1]) :
-                            $date->addYears($operation[1]);
+                    $calcDate = $operation[0] == '-' ?
+                        $calcDate->subYears($operation[1]) :
+                            $calcDate->addYears($operation[1]);
                     break;
                 default:
                     Log::error('Invalid operation: ' . json_encode($operation));
+                    return null;
                     break;
             }
+
+            return $calcDate;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-        } finally {
-            return $date;
+            return null;
         }
     }
 
-    public function messageScheduling(array $params)
+    /**
+     * Save scheduling message to database
+     * @param array $params
+     * @return null|SchedulingMessage
+     */
+    public function saveMessage(array $params): ?SchedulingMessage
+    {
+        $message = null;
+        try {
+            $message = SchedulingMessage::create([
+                'id' => Uuid::uuid1(),
+                'data' => json_encode($params['waysDelivery']),
+                'conditions_stop' => isset($params['conditionsStopDelivery']) ? json_encode($params['conditionsStopDelivery']) : null,
+                'conditions_update' => isset($params['conditionsUpdateDelivery']) ? json_encode($params['conditionsUpdateDelivery']) : null,
+                'delivery_date' => $params['deliveryDate']
+            ]);
+        }
+        catch (\Exception $e) {
+            Log::error('SchedulingController: saveMessage: ' . $e->getMessage());
+        } finally {
+            return $message;
+        }
+    }
+
+    /**
+     * Prepare scheduling message
+     * @param array $params
+     * @return SchedulingMessage|null
+     */
+    public function messageScheduling(array $params): ?SchedulingMessage
     {
         if (isset($params['dateDelivery'])) {
             if (isset($params['dateDelivery']['startDate'])) {
-                $dateDelivery = Carbon::parse($params['dateDelivery']['startDate']);
+                $dateDelivery = null;
                 if (isset($params['dateDelivery']['operation']))
-                    $dateDelivery = $this->calcDeliveryDate($dateDelivery, $params['dateDelivery']['operation']);
-                // TODO: save to database
-                //$messageScheduling
+                    $dateDelivery = $this->calcDeliveryDate($params['dateDelivery']['startDate'], $params['dateDelivery']['operation']);
+                else {
+                    Log::error('SchedulingController: messageScheduling: operation not found');
+                    return null;
+                }
+
+                if (!is_null($dateDelivery))
+                    $params['deliveryDate'] = $dateDelivery;
+                else {
+                    Log::error('SchedulingController: messageScheduling: dateDelivery invalid params');
+                    return null;
+                }
+
+                return $this->saveMessage($params);
             }
-            else
+            else {
                 Log::error('SchedulingController: messageScheduling: startDate not found');
-        }
-        else
-            Log::error('SchedulingController: messageScheduling: dateDelivery not found');
-    }
-
-    public function saveSchedulingEmails($settings){
-        $email = EmailSchedulings::where([
-            ['external_id', '=', $settings['extenalId']],
-            ['to', '=', $settings['to']],
-            ['delivery_date', '=', $settings['deliveryDate']],
-            ])->first();
-        if($email == null) {
-            $email = new EmailSchedulings();
-            $email->id = \Ramsey\Uuid\Uuid::uuid1();
-        }
-        $email->external_id = $settings['extenalId'];
-        $email->from = isset($settings['from']) ? $settings['from'] : null;
-        $email->from_name = isset($settings['fromName']) ? $settings['fromName'] : null;
-        $email->to = $settings['to'];
-        $email->to_name = isset($settings['toName']) ? $settings['toName'] : null;
-        $email->subject = $settings['subject'];
-        $email->body = isset($settings['body']) ? $settings['body'] : null;
-        $email->template = isset($settings['template']) ? $settings['template'] : null;
-        $email->delivery_date = $settings['deliveryDate'];
-        $email->event_stop = isset($settings['eventStop']) ? $settings['eventStop'] : null;
-        $variables = '';
-        if(isset($settings['templateVariables'])){
-            foreach ($settings['templateVariables'] as $key => $value) {
-                    $variables .= $key . '*|#-:-#|*' . $value;
-                end($settings['templateVariables']);
-                if ($key !== key($settings['templateVariables']))
-                    $variables .= '*|#-;-#|*';
+                return null;
             }
         }
-        $email->template_variables = $variables;
-        $email->sent = false;
-        $email->save();
-
-        $this->generateLog('Agendamento salvo', $settings['to'], $settings['event'], $email);
+        else{
+            Log::error('SchedulingController: messageScheduling: dateDelivery not found');
+            return null;
+        }
     }
 
     public function deleteSchedulingEmails($settings)

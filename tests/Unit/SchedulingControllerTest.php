@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\SchedulingController;
+use App\SchedulingMessage;
 use Carbon\Carbon;
 use Tests\Faker\MessageFaker;
 use Tests\TestCase;
@@ -74,8 +75,94 @@ class SchedulingControllerTest extends TestCase
         // act
         $dateCalc = $schedulingController->calcDeliveryDate($startDate, $operator);
         // assert
-        $this->assertEquals(Carbon::now()->toString(), $dateCalc->toString());
+        $this->assertEquals(null, $dateCalc);
+
+        // arrange
+        $operator = "- $day Years";
+        $dataInvalid = "12/32/2022";
+        // act
+        $dateCalc = $schedulingController->calcDeliveryDate($dataInvalid, $operator);
+        // assert
+        $this->assertEquals(null, $dateCalc);
     }
+
+    /**
+     * @group schedulingTest
+     */
+    public function testSaveMessage() {
+        // arrange
+        $schedulingController = new SchedulingController();
+        $params = [
+            'deliveryDate' => Carbon::now()->addDays(1)->toDate(),
+            'waysDelivery' => [
+                  [
+                      'class' => "App\\Http\\Controllers\\TelegramController",
+                      'methods' => [
+                          [
+                              'sendMessage' => [
+                                  'to' => '123456789',
+                                  'message' => "Text message."
+                              ]
+                          ]
+                        ]
+                  ]
+                ],
+            'conditionsStopDelivery' => [
+                'post.body.cardId' => 'wwutm7rsiJPX5ar3z',
+                'post.header.x-forwarded-for' => '178.128.181.251',
+                'post.body.description' => 'act-moveCard'
+            ]
+        ];
+
+        // act
+        $result = $schedulingController->saveMessage($params);
+
+        // assert
+        $this->assertDatabaseHas('scheduling_messages', [
+            'id' => $result->id,
+        ]);
+    }
+
+    /**
+     * @group test01
+     */
+    public function testMessageScheduling() {
+        // arrange
+        $schedulingController = new SchedulingController();
+        $params = [
+            "dateDelivery" => [
+                "startDate" => "12/31/2022",
+                "operation" => "+ 3 days"
+            ],
+            'waysDelivery' => [
+                [
+                    'class' => "App\\Http\\Controllers\\TelegramController",
+                    'methods' => [
+                        [
+                            'sendMessage' => [
+                                'to' => '123456789',
+                                'message' => "Text message."
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+        // act
+        $result = $schedulingController->messageScheduling($params);
+        // assert
+        $this->assertDatabaseHas('scheduling_messages', [
+            'id' => $result->id,
+        ]);
+
+        // arrange
+        $params['dateDelivery']['operation'] = "* days error";
+        // act
+        $result = $schedulingController->messageScheduling($params);
+        // assert
+        $this->assertEquals(null, $result);
+    }
+
 
     /**
      * @group schedulingTest
