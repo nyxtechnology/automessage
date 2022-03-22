@@ -14,7 +14,7 @@ class SchedulingMessage extends Model
         'data',
         'conditions_stop',
         'conditions_update',
-        'sent',
+        'processed',
         'delivery_date'
     ];
 

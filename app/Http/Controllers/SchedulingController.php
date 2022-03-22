@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-use App\EmailSchedulings;
 use App\SchedulingMessage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -133,6 +132,7 @@ class SchedulingController extends Controller
             return null;
         }
     }
+
 
     public function deleteSchedulingEmails($settings)
     {
