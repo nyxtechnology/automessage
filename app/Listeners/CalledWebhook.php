@@ -50,16 +50,5 @@ class CalledWebhook
             else
                 Log::error('CalledWebhook:handle - Error: '.$classes['class'].' does not exist');
         }
-
-
-
-        // call function by webhook event
-        /*$settings = $event->settings;
-        foreach($settings as $class){
-            $object = new $class['class'];
-            foreach($class['methods'][0] as $method => $parameters){
-                $object->$method($parameters);
-            }
-        }*/
     }
 }
