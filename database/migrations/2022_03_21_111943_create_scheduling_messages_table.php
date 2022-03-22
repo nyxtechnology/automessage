@@ -18,7 +18,7 @@ class CreateSchedulingMessagesTable extends Migration
             $table->json('data');
             $table->json('conditions_stop')->nullable();
             $table->json('conditions_update')->nullable();
-            $table->boolean('sent')->default(false);
+            $table->boolean('processed')->default(false);
             $table->date('delivery_date');
             $table->timestamps();
         });

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Http\Controllers\SchedulingController;
 use App\SchedulingMessage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 use Tests\Faker\MessageFaker;
 use Tests\TestCase;
 
@@ -87,25 +88,43 @@ class SchedulingControllerTest extends TestCase
     }
 
     /**
-     * @group schedulingTest
+     * @group schedulingTest1
      */
     public function testSaveMessage() {
         // arrange
         $schedulingController = new SchedulingController();
+        echo "\n" . Carbon::now()->toDateString();
         $params = [
-            'deliveryDate' => Carbon::now()->addDays(1)->toDate(),
+            'deliveryDate' => Carbon::now()->toDate(),
             'waysDelivery' => [
                   [
                       'class' => "App\\Http\\Controllers\\TelegramController",
                       'methods' => [
                           [
                               'sendMessage' => [
-                                  'to' => '123456789',
-                                  'message' => "Text message."
+                                  'to' => Config::get('telegram.test.chat_id'),
+                                  'message' => "Text message1."
+                              ]
+                          ],
+                          [
+                              'sendMessage' => [
+                                  'to' => Config::get('telegram.test.chat_id'),
+                                  'message' => "Text message2."
                               ]
                           ]
-                        ]
-                  ]
+                        ],
+                  ],
+                  [
+                      'class' => "App\\Http\\Controllers\\TelegramController",
+                      'methods' => [
+                          [
+                              'sendMessage' => [
+                                  'to' => Config::get('telegram.test.chat_id'),
+                                  'message' => "Text message3."
+                              ]
+                          ]
+                        ],
+                  ],
                 ],
             'conditionsStopDelivery' => [
                 'post.body.cardId' => 'wwutm7rsiJPX5ar3z',
