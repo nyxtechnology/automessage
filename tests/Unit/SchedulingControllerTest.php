@@ -88,7 +88,7 @@ class SchedulingControllerTest extends TestCase
     }
 
     /**
-     * @group schedulingTest1
+     * @group schedulingTest
      */
     public function testSaveMessage() {
         // arrange
