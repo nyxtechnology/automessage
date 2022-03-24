@@ -8,8 +8,11 @@ use Tests\TestCase;
 
 class ReceiveEventTest extends TestCase
 {
-    protected string $post = '{"header": {"host": "https://mytest.com","messageType": "event"},"body": {"to": "0123456789", "timezone": "São Paulo", "card": "card 1", "user": "Test User", "description": "It is a description", "text": "It is a text", "event": "post.header.messageType","host": "post.header.host"}}';
+    protected string $post = '{"header": {"host": "https://mytest.com","messageType": "event", "x-forwarded-for": "178.128.181.251"},"body": {"to": "0123456789", "timezone": "São Paulo", "card": "card 1", "user": "Test User", "description": "It is a description", "text": "It is a text", "event": "post.header.messageType","host": "post.header.host"}}';
 
+    /**
+     * @group receiveEvent
+     */
     public function testDispatch()
     {
         // arrange
@@ -23,7 +26,7 @@ class ReceiveEventTest extends TestCase
     }
 
     /**
-     * @doesNotPerformAssertions
+     * @group receiveEvent1
      */
     public function testHandle()
     {
@@ -31,29 +34,32 @@ class ReceiveEventTest extends TestCase
         $receiveEvent = new ReceiveEvent($this->post);
 
         // act
-        $receiveEvent->handle();
+        $count = $receiveEvent->handle();
 
         // assert
-        // it is a no return method
+        $this->assertTrue($count == 1);
     }
 
     /**
-     * @test
+     * @group receiveEvent
      */
-    public function testCheckPostCondition()
+    public function testCheckCondition()
     {
         // arrange
         $receiveEvent = new ReceiveEvent($this->post);
 
         // act
-        $testTrue = $receiveEvent->checkPostCondition("post.header.host", "https://mytest.com" );
-        $testFalse = $receiveEvent->checkPostCondition("post.header.host", "event" );
+        $testTrue = $receiveEvent->checkCondition("post.header.host", "https://mytest.com" );
+        $testFalse = $receiveEvent->checkCondition("post.header.host", "event" );
 
         // assert
         $this->assertTrue($testTrue);
         $this->assertFalse($testFalse);
     }
 
+    /**
+     * @group receiveEvent
+     */
     public function testPreparePostVariables() {
         // arrange
         $receiveEvent = new ReceiveEvent($this->post);
