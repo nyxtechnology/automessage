@@ -30,28 +30,42 @@ class ReceiveEvent implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $eventMap = json_decode(file_get_contents(Config::get('settings.event_path')),true);
         sleep(2);
+        $count = 0;
         foreach ($eventMap as $events) {
             foreach ($events as $event) {
                 // check if event's conditions is true
                 $conditions = true;
-                foreach ($event['conditions'] as $key => $value) {
-                    if(!$this->checkPostCondition($key, $value)) {
-                        $conditions = false;
-                        break;
+                foreach ($event['conditions'] as $condition) {
+                    // condition object works with operator AND
+                    // so if any condition is false,
+                    // the whole condition will be false.
+                    foreach ($condition as $key => $value) {
+                        if(!$this->checkCondition($key, $value)) {
+                            $conditions = false;
+                            break;
+                        }
+                        $conditions = true;
                     }
+                    // conditions array works with operator OR
+                    // so if any condition item is true,
+                    // the whole condition will be true.
+                    if($conditions)
+                        break;
                 }
                 if($conditions) {
                     $this->prepareClassesVariables($event['classes']);
                     event(new WebhookReceived($event['classes']));
+                    $count++;
                 }
             }
         }
+        return $count;
     }
 
     /**
@@ -87,8 +101,8 @@ class ReceiveEvent implements ShouldQueue
             foreach ($value as $k => &$v)
                 $this->setPostVariableRecursive($v);
         }
-
-        $value = $this->getPostVariableValue($value);
+        else
+            $value = $this->getPostVariableValue($value);
     }
 
     /**
@@ -120,14 +134,14 @@ class ReceiveEvent implements ShouldQueue
      * @param $value
      * @return bool
      */
-    public function checkPostCondition($variable, $testValue): bool
+    public function checkCondition($valueOne, $valueTwo): bool
     {
-        $value = $this->getPostVariableValue($variable);
+        $value = $this->getPostVariableValue($valueOne);
         if($value == null)
             return false;
-        if (is_array($value) && in_array($testValue, $value))
+        if (is_array($value) && in_array($valueTwo, $value))
             return true;
-        if ($value == $testValue)
+        if ($value == $valueTwo)
             return true;
         return false;
     }

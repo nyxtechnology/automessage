@@ -1,11 +1,16 @@
 {
   "boardActions": [
     {
-      "conditions": {
-        "post.header.x-forwarded-for": "178.128.181.251",
-        "post.body.description": "act-completeChecklist",
-        "post.body.user": "gilberto.souza"
-      },
+      "conditions": [
+        {
+          "post.header.x-forwarded-for": "178.128.181.251",
+          "post.body.description": "act-completeChecklist",
+          "post.body.user": "gilberto.souza"
+        },
+        {
+          "post.header.x-forwarded-for": "178.128.181.251"
+        }
+      ],
       "classes": [
         {
           "class": "App\\Http\\Controllers\\TelegramController",
@@ -55,11 +60,13 @@
       ]
     },
     {
-      "conditions": {
-        "post.header.from": "https://board.nyx.tc",
-        "post.body.description": "act-moveCard",
-        "post.body.user": "edmar.souza"
-      },
+      "conditions": [
+        {
+          "post.header.from": "https://board.nyx.tc",
+          "post.body.description": "act-moveCard",
+          "post.body.user": "edmar.souza"
+        }
+      ],
       "classes": [
         {
           "class": "App\\Http\\Controllers\\TelegramController",
@@ -77,10 +84,12 @@
   ],
   "PaymentActions": [
     {
-      "conditions": {
-        "post.header.from": "https://marketing.place.nyx.tc",
-        "post.body.event": "startPayment"
-      },
+      "conditions": [
+        {
+          "post.header.from": "https://marketing.place.nyx.tc",
+          "post.body.event": "startPayment"
+        }
+      ],
       "classes": [
         {
           "class": "App\\Http\\Controllers\\SchedulingController",
