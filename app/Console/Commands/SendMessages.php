@@ -50,7 +50,7 @@ class SendMessages extends Command
         foreach ($messages as $message) {
             try {
                 // transform json from db data to an array and loop through it
-                $data = json_decode($message->data, true);
+                $data = json_decode($message->classes, true);
                 foreach($data as $classes){
                     // check if the class exists and instance it
                     if (class_exists($classes['class'])) {
@@ -80,7 +80,7 @@ class SendMessages extends Command
                 continue;
             } finally {
                 $message->processed = true;
-                $message->save();
+                $message->update();
                 $this->info("send:scheduledMessages - Message processed: $message->id");
             }
         }

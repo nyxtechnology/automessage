@@ -11,11 +11,12 @@ class SchedulingMessage extends Model
 
     public $fillable = [
         'id',
-        'data',
+        'classes',
         'conditions_stop',
         'conditions_update',
-        'processed',
-        'delivery_date'
+        'operation',
+        'delivery_date',
+        'processed'
     ];
 
     public $casts = ['id' => 'string', ];

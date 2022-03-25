@@ -15,11 +15,12 @@ class CreateSchedulingMessagesTable extends Migration
     {
         Schema::create('scheduling_messages', function (Blueprint $table) {
             $table->uuid('id');
-            $table->json('data');
+            $table->json('classes');
             $table->json('conditions_stop')->nullable();
             $table->json('conditions_update')->nullable();
-            $table->boolean('processed')->default(false);
+            $table->string('operation');
             $table->date('delivery_date');
+            $table->boolean('processed')->default(false);
             $table->timestamps();
         });
     }

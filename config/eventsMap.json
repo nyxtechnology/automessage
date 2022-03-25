@@ -6,6 +6,9 @@
           "post.header.x-forwarded-for": "178.128.181.251",
           "post.body.description": "act-completeChecklist",
           "post.body.user": "gilberto.souza"
+        },
+        {
+          "post.header.x-forwarded-for": "178.128.181.251"
         }
       ],
       "classes": [
@@ -101,11 +104,20 @@
                     ]
                   }
                 ],
-                "conditionsStopDelivery": {
-                  "post.body.cardId": "wwutm7rsiJPX5ar3z",
-                  "post.header.x-forwarded-for": "178.128.181.251",
-                  "post.body.description": "act-moveCard"
-                }
+                "conditionsStopDelivery": [
+                  {
+                    "post.body.cardId": "wwutm7rsiJPX5ar3z",
+                    "post.header.x-forwarded-for": "178.128.181.251",
+                    "post.body.description": "act-archiveCard"
+                  }
+                ],
+                "conditionsRefreshDelivery": [
+                  {
+                    "post.body.cardId": "wwutm7rsiJPX5ar3z",
+                    "post.header.x-forwarded-for": "178.128.181.251",
+                    "post.body.description": "act-moveCard"
+                  }
+                ]
               }
             }
           ]
