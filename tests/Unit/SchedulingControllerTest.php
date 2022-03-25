@@ -12,12 +12,12 @@ use Tests\TestCase;
 class SchedulingControllerTest extends TestCase
 {
     /**
-     * @group schedulingTest
+     * @group schedulingControllerTest
      */
     public function testCalcDeliveryDate() {
         // arrange
         $schedulingController = new SchedulingController();
-        $startDate = "12/31/2022";
+        $startDate = "2022/03/11";
         Carbon::setTestNow(Carbon::parse($startDate));
         $day = random_int(0, 100);
         $operator = "+ $day days";
@@ -80,7 +80,7 @@ class SchedulingControllerTest extends TestCase
 
         // arrange
         $operator = "- $day Years";
-        $dataInvalid = "12/32/2022";
+        $dataInvalid = "2022/12/32";
         // act
         $dateCalc = $schedulingController->calcDeliveryDate($dataInvalid, $operator);
         // assert
@@ -88,13 +88,16 @@ class SchedulingControllerTest extends TestCase
     }
 
     /**
-     * @group schedulingTest
+     * @group schedulingControllerTest
      */
     public function testSaveMessage() {
         // arrange
         $schedulingController = new SchedulingController();
-        echo "\n" . Carbon::now()->toDateString();
         $params = [
+            'dateDelivery' => [
+                'operation' => '+ 1 day',
+                'startDate' => Carbon::today()->toDateString()
+            ],
             'deliveryDate' => Carbon::now()->toDate(),
             'waysDelivery' => [
                   [
@@ -127,9 +130,11 @@ class SchedulingControllerTest extends TestCase
                   ],
                 ],
             'conditionsStopDelivery' => [
-                'post.body.cardId' => 'wwutm7rsiJPX5ar3z',
-                'post.header.x-forwarded-for' => '178.128.181.251',
-                'post.body.description' => 'act-moveCard'
+                [
+                    'post.body.cardId' => 'wwutm7rsiJPX5ar3z',
+                    'post.header.x-forwarded-for' => '178.128.181.251',
+                    'post.body.description' => 'act-moveCard'
+                ]
             ]
         ];
 
@@ -140,10 +145,11 @@ class SchedulingControllerTest extends TestCase
         $this->assertDatabaseHas('scheduling_messages', [
             'id' => $result->id,
         ]);
+        SchedulingMessage::destroy($result->id);
     }
 
     /**
-     * @group schedulingTest
+     * @group schedulingControllerTest
      */
     public function testMessageScheduling() {
         // arrange
@@ -173,6 +179,7 @@ class SchedulingControllerTest extends TestCase
         $this->assertDatabaseHas('scheduling_messages', [
             'id' => $result->id,
         ]);
+        SchedulingMessage::destroy($result->id);
 
         // arrange
         $params['dateDelivery']['operation'] = "* days error";
@@ -182,44 +189,72 @@ class SchedulingControllerTest extends TestCase
         $this->assertEquals(null, $result);
     }
 
-
     /**
-     * @group schedulingTest
+     * @group schedulingControllerTest
      */
-    public function testSaveSchedulingEmails()
-    {
-        $settings = [
-            'externalId' => '1234FDE',
-            'to' => 'teste@teste.com.br',
-            'deliveryDate' => '2020-05-31 00:00:00',
-            'subject' => 'Test',
-            'eventStop'=> 'Test',
-            'event' => 'Test'
-        ];
+    public function testStopOrRefreshScheduling() {
+        // arrange
         $schedulingController = new SchedulingController();
-        $schedulingController->saveSchedulingEmails($settings);
-        $this->assertDatabaseHas('email_schedulings', [
-            'external_id' => '1234FDE',
-        ]);
-    }
-
-    /**
-     * @group schedulingTest
-     */
-    public function testDeleteSchedulingEmails()
-    {
-        $settings = [
-            'params' => [
-                'extenalId' => '1234FDE',
-                'to' => 'teste@teste.com.br',
+        $days = random_int(1, 10);
+        $params = [
+            "dateDelivery" => [
+                "startDate" => "2022/03/08",
+                "operation" => "+ $days days"
             ],
-            'event' => 'Test'
+            'waysDelivery' => [
+                [
+                    'class' => "App\\Http\\Controllers\\TelegramController",
+                    'methods' => [
+                        [
+                            'sendMessage' => [
+                                'to' => '123456789',
+                                'message' => "Text message."
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            "conditionsRefreshDelivery" => [
+                [
+                    "post.body.cardId" => "updateCard45678GG",
+                    "post.header.host" => "https://mytest.com",
+                    "post.body.description" => "act-moveCard"
+                ]
+            ]
         ];
-        $schedulingController = new SchedulingController();
-        $schedulingController->deleteSchedulingEmails($settings);
-        $this->assertDatabaseMissing('email_schedulings', [
-            'external_id' => '1234FDE'
+        $messageScheduling = $schedulingController->messageScheduling($params);
+        $post = '{"header": {"host": "https://mytest.com","messageType": "event", "x-forwarded-for": "178.128.181.251"},"body": {"to": "0123456789", "timezone": "São Paulo", "cardId": "updateCard45678GG", "user": "Test User", "description": "act-moveCard", "text": "It is a text", "event": "post.header.messageType","host": "post.header.host"}}';
+
+        // act
+        $result = $schedulingController->stopOrRefreshScheduling(json_decode($post));
+
+        // assert
+        $this->assertDatabaseHas('scheduling_messages', [
+            'id' => $messageScheduling->id,
+            'delivery_date' => Carbon::today()->addDays($days)->toDate(),
+            'processed' => false
         ]);
+        SchedulingMessage::destroy($messageScheduling->id);
+
+        // arrange
+        $params['conditionsStopDelivery'] = [
+            [
+                "post.body.cardId" => "updateCard45678GG",
+                "post.header.host" => "https://mytest.com",
+                "post.body.description" => "act-moveCard"
+            ]
+        ];
+        $messageScheduling = $schedulingController->messageScheduling($params);
+
+        // act
+        $result = $schedulingController->stopOrRefreshScheduling(json_decode($post));
+
+        // assert
+        $this->assertDatabaseHas('scheduling_messages', [
+            'id' => $messageScheduling->id,
+            'processed' => true
+        ]);
+        SchedulingMessage::destroy($messageScheduling->id);
     }
 }
 

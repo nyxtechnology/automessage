@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 use App\SchedulingMessage;
+use App\Util\HandlePostVariables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
@@ -83,9 +84,10 @@ class SchedulingController extends Controller
         try {
             $message = SchedulingMessage::create([
                 'id' => Uuid::uuid1(),
-                'data' => json_encode($params['waysDelivery']),
+                'classes' => json_encode($params['waysDelivery']),
                 'conditions_stop' => isset($params['conditionsStopDelivery']) ? json_encode($params['conditionsStopDelivery']) : null,
-                'conditions_update' => isset($params['conditionsUpdateDelivery']) ? json_encode($params['conditionsUpdateDelivery']) : null,
+                'conditions_update' => isset($params['conditionsRefreshDelivery']) ? json_encode($params['conditionsRefreshDelivery']) : null,
+                'operation' => $params['dateDelivery']['operation'],
                 'delivery_date' => $params['deliveryDate']
             ]);
         }
@@ -133,62 +135,35 @@ class SchedulingController extends Controller
         }
     }
 
-
-    public function deleteSchedulingEmails($settings)
-    {
-        $emails = EmailSchedulings::where('event_stop', $settings['event'])
-            ->where('external_id', isset($settings['extenalId']) ? $settings['extenalId'] : null)
-            ->where('to', $settings['to'])
-            ->where('sent', false)->get();
-        foreach ($emails as $email) {
-            try {
-                EmailSchedulings::destroy($email->id);
-                $this->generateLog('Agendamento deletado', $settings['to'], $settings['event'], $email);
-            }
-            catch (\Exception $e){
-                Log::error('deleteSchedulingEmails - Error: '.$e->getMessage());
-                continue;
-            }
-        }
-    }
-
     /**
-     * Deletes all scheduled records from an email by stop event
-     * @param $settings
+     * Update delivery date or stop delivery
+     * @param $params
+     * @return bool
      */
-    public function deleteAllSchedulingEmailsByEventStop($settings)
-    {
-        $emails = EmailSchedulings::where('event_stop', $settings['event'])
-            ->where('to', $settings['to'])
-            ->where('sent', false)->get();
-        foreach ($emails as $email) {
-            try {
-                EmailSchedulings::destroy($email->id);
-                $this->generateLog('Agendamento deletado', $settings['to'], $settings['event'], $email);
-            }
-            catch (\Exception $e){
-                Log::error('deleteSchedulingEmails - Error: '.$e->getMessage());
-                continue;
-            }
-        }
-    }
+    public function stopOrRefreshScheduling($params): bool {
+        $messages = SchedulingMessage::where('processed', false)
+            ->where('conditions_stop', '<>', null)->get();
 
-    public function updateSchedulingEmails($settings)
-    {
-        $emails = EmailSchedulings::where('event_stop', $settings['event']);
-            if(isset($settings['extenalId']))
-                $emails->where('external_id', $settings['extenalId']);
-        $emails = $emails->get();
-        foreach ($emails as $email) {
-            try {
-                $email->delivery_date = $settings['deliveryDate'];
-                $email->save();
-                $this->generateLog('Agendamento atualizado', $settings['to'], $settings['event'], $email);
+        $messages->each(function (SchedulingMessage $message) use ($params) {
+            $conditionsStop = json_decode($message->conditions_stop, true);
+            $condition = new HandlePostVariables($conditionsStop, $params);
+            if($condition->handleConditions()) {
+                $message->processed = true;
+                $message->update();
             }
-            catch (\Exception $e){
-                Log::error('updateSchedulingEmails - Error: '.$e->getMessage());
-                continue;
+        });
+
+        $messages = SchedulingMessage::where('processed', false)
+            ->where('conditions_update', '<>', null)->get();
+        $messages->each(function (SchedulingMessage $message) use ($params) {
+            $conditionsUpdate = json_decode($message->conditions_update, true);
+            $condition = new HandlePostVariables($conditionsUpdate, $params);
+            if($condition->handleConditions()) {
+                $message->delivery_date = $this->calcDeliveryDate(Carbon::today()->toString(), $message->operation);
+                $message->update();
             }
-        }
+        });
+
+        return true;
     }
 }

@@ -26,7 +26,7 @@ class ReceiveEventTest extends TestCase
     }
 
     /**
-     * @group receiveEvent1
+     * @group receiveEvent
      */
     public function testHandle()
     {
@@ -38,40 +38,5 @@ class ReceiveEventTest extends TestCase
 
         // assert
         $this->assertTrue($count == 1);
-    }
-
-    /**
-     * @group receiveEvent
-     */
-    public function testCheckCondition()
-    {
-        // arrange
-        $receiveEvent = new ReceiveEvent($this->post);
-
-        // act
-        $testTrue = $receiveEvent->checkCondition("post.header.host", "https://mytest.com" );
-        $testFalse = $receiveEvent->checkCondition("post.header.host", "event" );
-
-        // assert
-        $this->assertTrue($testTrue);
-        $this->assertFalse($testFalse);
-    }
-
-    /**
-     * @group receiveEvent
-     */
-    public function testPreparePostVariables() {
-        // arrange
-        $receiveEvent = new ReceiveEvent($this->post);
-        $classes = json_decode(file_get_contents(dirname(__DIR__, 1) . '/config/eventsMap.json'), true)['boardActions'][0]['classes'];
-
-        // assert
-        $this->assertNotEquals("São Paulo", $classes[1]["methods"][0]["sendMail"]["templateVariables"]["action"]["date"]["timezone"]);
-
-        // act
-        $receiveEvent->prepareClassesVariables($classes);
-
-        // assert
-        $this->assertEquals("São Paulo", $classes[1]["methods"][0]["sendMail"]["templateVariables"]["action"]["date"]["timezone"]);
     }
 }
