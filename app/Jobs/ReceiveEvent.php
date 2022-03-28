@@ -42,8 +42,8 @@ class ReceiveEvent implements ShouldQueue
         sleep(2);
 
         //stop or refresh schedule messages
-        //$schedule = new SchedulingController();
-        //$schedule->stopOrRefreshScheduling($this->message);
+        $schedule = new SchedulingController();
+        $schedule->stopOrRefreshScheduling($this->message);
 
         $count = 0;
         foreach ($eventMap as $events) {
