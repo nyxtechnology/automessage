@@ -28,8 +28,8 @@ class CalledWebhook
         $settings = $event->settings;
         foreach($settings as $classes) {
             // check if the class exists and instance it
-            if (class_exists($classes['class'])) {
-                $object = new $classes['class'];
+            if (class_exists($classes['controller'])) {
+                $object = new $classes['controller'];
                 // loop through the class method
                 foreach($classes['methods'] as $methods) {
                     foreach($methods as $method => $parameters){
@@ -43,12 +43,12 @@ class CalledWebhook
                             }
                         }
                         else
-                            Log::error('CalledWebhook:handle - Error: Method '.$method.' does not exist in class '.$classes['class']);
+                            Log::error('CalledWebhook:handle - Error: Method '.$method.' does not exist in class '.$classes['controller']);
                     }
                 }
             }
             else
-                Log::error('CalledWebhook:handle - Error: '.$classes['class'].' does not exist');
+                Log::error('CalledWebhook:handle - Error: '.$classes['controller'].' does not exist');
         }
     }
 }

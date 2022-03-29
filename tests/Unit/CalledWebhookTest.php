@@ -19,7 +19,7 @@ class CalledWebhookTest extends TestCase
         // TODO: change to email test
         $classes = [
             [
-                'class' => "App\\Http\\Controllers\\TelegramController",
+                'controller' => "App\\Http\\Controllers\\TelegramController",
                 'methods' => [
                     [
                         'sendMessage' => [
@@ -36,7 +36,7 @@ class CalledWebhookTest extends TestCase
                 ],
             ],
             [
-                'class' => "App\\Http\\Controllers\\TelegramController",
+                'controller' => "App\\Http\\Controllers\\TelegramController",
                 'methods' => [
                     [
                         'sendMessage' => [

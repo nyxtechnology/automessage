@@ -53,8 +53,8 @@ class SendMessages extends Command
                 $data = json_decode($message->classes, true);
                 foreach($data as $classes){
                     // check if the class exists and instance it
-                    if (class_exists($classes['class'])) {
-                        $object = new $classes['class'];
+                    if (class_exists($classes['controller'])) {
+                        $object = new $classes['controller'];
                         // loop through the class method
                         foreach($classes['methods'] as $methods) {
                             foreach($methods as $method => $parameters){
@@ -68,12 +68,12 @@ class SendMessages extends Command
                                     }
                                 }
                                 else
-                                    $this->error('send:scheduledMessages - Method '.$method.' does not exist in class '.$classes['class']);
+                                    $this->error('send:scheduledMessages - Method '.$method.' does not exist in class '.$classes['controller']);
                             }
                         }
                     }
                     else
-                        $this->error('send:scheduledMessages - Error: '.$classes['class'].' does not exist');
+                        $this->error('send:scheduledMessages - Error: '.$classes['controller'].' does not exist');
                 }
             } catch (\Exception $e) {
                 $this->error('send:scheduledMessages - Error: ' . $e->getMessage());

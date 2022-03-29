@@ -97,7 +97,7 @@ class HandlePostVariablesTest extends TestCase
     public function testPreparePostVariables() {
         // arrange
         $handlePostVariables = new HandlePostVariables($this->conditions, json_decode($this->post));
-        $classes = json_decode(file_get_contents(dirname(__DIR__, 1) . '/config/eventsMap.json'), true)['boardActions'][0]['classes'];
+        $classes = json_decode(file_get_contents(dirname(__DIR__, 1) . '/config/eventsMap.json'), true)['boardActions'][0]['messageControllers'];
 
         // assert
         $this->assertNotEquals("São Paulo", $classes[1]["methods"][0]["sendMail"]["templateVariables"]["action"]["date"]["timezone"]);
