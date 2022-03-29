@@ -19,7 +19,6 @@ class ReceiveEvent implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $message;
-    private $handlePost;
 
     /**
      * Create a new job instance.
@@ -48,10 +47,10 @@ class ReceiveEvent implements ShouldQueue
         $count = 0;
         foreach ($eventMap as $events) {
             foreach ($events as $event) {
-                $this->handlePost = new HandlePostVariables($event['conditions'], $this->message);
-                if($this->handlePost->handleConditions()) {
-                    $this->handlePost->prepareClassesVariables($event['classes']);
-                    event(new WebhookReceived($event['classes']));
+                $handlePost = new HandlePostVariables($event['conditions'], $this->message);
+                if($handlePost->handleConditions()) {
+                    $handlePost->prepareClassesVariables($event['messageControllers']);
+                    event(new WebhookReceived($event['messageControllers']));
                     $count++;
                 }
             }

@@ -11,9 +11,9 @@
           "post.header.x-forwarded-for": "178.128.181.251"
         }
       ],
-      "classes": [
+      "messageControllers": [
         {
-          "class": "App\\Http\\Controllers\\TelegramController",
+          "controller": "App\\Http\\Controllers\\TelegramController",
           "methods": [
             {
               "sendMessage": {
@@ -24,7 +24,7 @@
           ]
         },
         {
-          "class": "App\\Http\\Controllers\\SendMailController",
+          "controller": "App\\Http\\Controllers\\SendMailController",
           "methods": [
             {
               "sendMail": {
@@ -67,9 +67,9 @@
           "post.body.user": "edmar.souza"
         }
       ],
-      "classes": [
+      "messageControllers": [
         {
-          "class": "App\\Http\\Controllers\\TelegramController",
+          "controller": "App\\Http\\Controllers\\TelegramController",
           "methods": [
             {
               "sendMessage": {
@@ -90,9 +90,9 @@
           "post.body.event": "startPayment"
         }
       ],
-      "classes": [
+      "messageControllers": [
         {
-          "class": "App\\Http\\Controllers\\SchedulingController",
+          "controller": "App\\Http\\Controllers\\SchedulingController",
           "methods": [
             {
               "deleteSchedulingEmails": {
@@ -122,7 +122,7 @@
                 },
                 "waysDelivery": [
                   {
-                    "class": "App\\Http\\Controllers\\TelegramController",
+                    "controller": "App\\Http\\Controllers\\TelegramController",
                     "methods": [
                       {
                         "sendMessage": {

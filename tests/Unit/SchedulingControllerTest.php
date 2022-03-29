@@ -101,7 +101,7 @@ class SchedulingControllerTest extends TestCase
             'deliveryDate' => Carbon::now()->toDate(),
             'waysDelivery' => [
                   [
-                      'class' => "App\\Http\\Controllers\\TelegramController",
+                      'controller' => "App\\Http\\Controllers\\TelegramController",
                       'methods' => [
                           [
                               'sendMessage' => [
@@ -118,7 +118,7 @@ class SchedulingControllerTest extends TestCase
                         ],
                   ],
                   [
-                      'class' => "App\\Http\\Controllers\\TelegramController",
+                      'controller' => "App\\Http\\Controllers\\TelegramController",
                       'methods' => [
                           [
                               'sendMessage' => [
@@ -161,7 +161,7 @@ class SchedulingControllerTest extends TestCase
             ],
             'waysDelivery' => [
                 [
-                    'class' => "App\\Http\\Controllers\\TelegramController",
+                    'controller' => "App\\Http\\Controllers\\TelegramController",
                     'methods' => [
                         [
                             'sendMessage' => [
@@ -203,7 +203,7 @@ class SchedulingControllerTest extends TestCase
             ],
             'waysDelivery' => [
                 [
-                    'class' => "App\\Http\\Controllers\\TelegramController",
+                    'controller' => "App\\Http\\Controllers\\TelegramController",
                     'methods' => [
                         [
                             'sendMessage' => [
