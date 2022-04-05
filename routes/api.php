@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('webhook/' . Config::get('settings.webhook_key'), 'ReceiverController@handleWebhook');
+Route::middleware('allowed.ips')->post('webhook/' . Config::get('settings.webhook_key'), 'ReceiverController@handleWebhook');
 
 Route::post('telegram', 'TelegramController@receiveMessage');
