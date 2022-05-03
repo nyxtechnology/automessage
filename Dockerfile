@@ -4,6 +4,7 @@ FROM php:8.0-apache
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
+	--no-dev \
         libbz2-dev \
         libfreetype6-dev \
         libjpeg-dev \
@@ -54,15 +55,15 @@ ENV VERSION 5.1.3
 ENV SHA256 c562feddc0f8ff5e69629113f273a0d024a65fb928c48e89ce614744d478296f
 ENV URL https://github.com/nyxtechnology/automessage/archive/refs/heads/stage.zip
 
-LABEL org.opencontainers.image.title="Official phpMyAdmin Docker image" \
-    org.opencontainers.image.description="Run phpMyAdmin with Alpine, Apache and PHP FPM." \
-    org.opencontainers.image.authors="The phpMyAdmin Team <developers@phpmyadmin.net>" \
-    org.opencontainers.image.vendor="phpMyAdmin" \
-    org.opencontainers.image.documentation="https://github.com/phpmyadmin/docker#readme" \
+LABEL org.opencontainers.image.title="Official Automessage Docker image" \
+    org.opencontainers.image.description="Run automessage with Alpine, Apache and PHP FPM." \
+    org.opencontainers.image.authors="The automessage Team <admin@nyc.tc>" \
+    org.opencontainers.image.vendor="Automessage" \
+    org.opencontainers.image.documentation="https://github.com/nyxtechnology/automessage-documentation" \
     org.opencontainers.image.licenses="GPL-2.0-only" \
     org.opencontainers.image.version="${VERSION}" \
-    org.opencontainers.image.url="https://github.com/phpmyadmin/docker#readme" \
-    org.opencontainers.image.source="https://github.com/phpmyadmin/docker.git"
+    org.opencontainers.image.url="https://github.com/nyxtechnology/automessage" \
+    org.opencontainers.image.source="https://github.com/nyxtechnology/automessage"
 
 # Download automessage zip, verify it using gpg and extract
 RUN set -ex; \
@@ -72,19 +73,10 @@ RUN set -ex; \
         dirmngr \
     ; \
     \
-    curl -fsSL -o automessage-stage.zip $URL; \
-    curl -fsSL -o automessage-stage.zip.asc $URL.asc; \
-    gpg --batch --verify phpMyAdmin.tar.xz.asc automessage-stage.zip; \
-    zip -xf phpMyAdmin.tar.xz -C /var/www/html --strip-components=1; \
+    zip -xf automessage-stage.zip -C /var/www/html --strip-components=1; \
     mkdir -p /var/www/html/tmp; \
     chown www-data:www-data /var/www/html/tmp; \
     gpgconf --kill all; \
     rm -r "$GNUPGHOME" automessage-stage.zip automessage-stage.zip.asc; \
-    rm -r -v /var/www/html/setup/ /var/www/html/examples/ /var/www/html/js/src/ /var/www/html/templates/test/ /var/www/html/babel.config.json /var/www/html/doc/html/_sources/ /var/www/html/RELEASE-DATE-$VERSION /var/www/html/CONTRIBUTING.md; \
-    sed -i "s@define('CONFIG_DIR'.*@define('CONFIG_DIR', '/etc/automessage/');@" /var/www/html/libraries/vendor_config.php; \
-    \
-    apt-mark auto '.*' > /dev/null; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/
 
 CMD ["apache2-foreground"]
